@@ -32,7 +32,6 @@ public class ButterLayoutEngineServlet extends HttpServlet {
         final String xmlData = req.getParameter(KEY_XML_DATA);
         final String rSeries = req.getParameter(KEY_R_SERIES);
 
-
         try {
 
             if (xmlData == null || xmlData.trim().isEmpty()) {
@@ -48,7 +47,6 @@ public class ButterLayoutEngineServlet extends HttpServlet {
 
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(new InputSource(new StringReader(xmlData)));
-            //Document doc = dBuilder.parse(new File("/home/theapache64/Documents/projects/cybaze/staynodes/android/lakkidi_village/staynodes/src/main/res/layout/content_base_room.xml"));
             doc.getDocumentElement().normalize();
 
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());

@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Date;
 
 /**
  * Created by theapache64 on 1/11/17.
@@ -67,7 +68,7 @@ public class ButterLayoutEngineServlet extends HttpServlet {
                     if (idNode != null) {
 
                         if (butterLayoutBuilder == null) {
-                            butterLayoutBuilder = new StringBuilder();
+                            butterLayoutBuilder = new StringBuilder("//Generated with ButterLayout (http://github.com/theapache64/butterLayout): " + new Date() + "\n");
                         }
 
                         final String id = idNode.getNodeValue().split("/")[1];

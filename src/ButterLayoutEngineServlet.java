@@ -60,6 +60,11 @@ public class ButterLayoutEngineServlet extends HttpServlet {
 
 
                 Node node = nodeList.item(i);
+                String nodeName = node.getNodeName();
+
+                if (nodeName.equals("include")) {
+                    continue;
+                }
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
 
@@ -73,7 +78,7 @@ public class ButterLayoutEngineServlet extends HttpServlet {
 
                         final String id = idNode.getNodeValue().split("/")[1];
                         butterLayoutBuilder.append(String.format("@BindView(%s.id.%s)\n", rSeries, id));
-                        String nodeName = node.getNodeName();
+
                         if (nodeName.contains(".")) {
                             final String[] nodeNameChunks = nodeName.split("\\.");
                             nodeName = nodeNameChunks[nodeNameChunks.length - 1];

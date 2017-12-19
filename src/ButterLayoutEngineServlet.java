@@ -94,7 +94,8 @@ public class ButterLayoutEngineServlet extends HttpServlet {
 
                         codeBuilder.append(String.format("%s %s;\n\n", nodeName, id));
 
-                        if (nodeName.endsWith("Button")) {
+                        final Node clickableNode = node.getAttributes().getNamedItem("android:clickable");
+                        if (nodeName.endsWith("Button") || (clickableNode != null && clickableNode.getNodeValue().equals("true"))) {
                             buttons.add(id);
                         }
                     }

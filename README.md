@@ -1,5 +1,5 @@
 # ButterLayout
-Generates butterknife view reference java-code from your XML layout. [Visit butterlayout](http://theapache64.xyz:8080/butterlayout)
+Generates butterknife view reference java-code from your XML layout. [Try butterlayout](http://theapache64.com/butterlayout)
 
 #Demo
 

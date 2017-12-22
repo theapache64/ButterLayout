@@ -22,8 +22,8 @@ import java.util.List;
 /**
  * Created by theapache64 on 1/11/17.
  */
-@WebServlet(urlPatterns = "/butter_layout_engine")
-public class ButterLayoutEngineServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/xml_to_butter_java")
+public class XmlToButterJavaServlet extends HttpServlet {
 
     private static final String KEY_XML_DATA = "xml_data";
     private static final String KEY_R_SERIES = "r_series";

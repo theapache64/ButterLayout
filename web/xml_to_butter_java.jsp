@@ -61,7 +61,7 @@
                     beforeSend: function (request) {
                         startLoading();
                     },
-                    url: "butter_layout_engine",
+                    url: "xml_to_butter_java",
                     data: {
                         xml_data: xmlData,
                         r_series: rSeries,

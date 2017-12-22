@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -93,7 +94,8 @@ public class ViewXmlToStyleXmlServlet extends HttpServlet {
      */
 
     private static String genCode(List<View> views) {
-        final StringBuilder codeBuilder = new StringBuilder();
+
+        final StringBuilder codeBuilder = new StringBuilder("<!-- Generated with ButterLayout (http://github.com/theapache64/butterLayout): " + new Date() + "-->\n");
 
         for (final View view : views) {
 
@@ -123,7 +125,7 @@ public class ViewXmlToStyleXmlServlet extends HttpServlet {
         if (chunks[0].equals("android")) {
             return key;
         }
-        return chunks[1];
+        return chunks.length > 1 ? chunks[1] : key;
     }
 
     private static String getStyleName(View view) {

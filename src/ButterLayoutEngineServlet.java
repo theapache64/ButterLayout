@@ -27,6 +27,7 @@ public class ButterLayoutEngineServlet extends HttpServlet {
 
     private static final String KEY_XML_DATA = "xml_data";
     private static final String KEY_R_SERIES = "r_series";
+    private static final String KEY_CLICK_LISTENERS = "click_listeners";
 
     private static String getFirstCharUppercase(String input) {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
@@ -38,6 +39,8 @@ public class ButterLayoutEngineServlet extends HttpServlet {
 
         final String xmlData = req.getParameter(KEY_XML_DATA);
         final String rSeries = req.getParameter(KEY_R_SERIES);
+        final boolean isGenClickListeners = req.getParameter(KEY_CLICK_LISTENERS).equals("true");
+
 
         try {
 
@@ -56,7 +59,6 @@ public class ButterLayoutEngineServlet extends HttpServlet {
             Document doc = dBuilder.parse(new InputSource(new StringReader(xmlData)));
             doc.getDocumentElement().normalize();
 
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 
             NodeList nodeList = doc.getElementsByTagName("*");
 
@@ -94,10 +96,13 @@ public class ButterLayoutEngineServlet extends HttpServlet {
 
                         codeBuilder.append(String.format("%s %s;\n\n", nodeName, id));
 
-                        final Node clickableNode = node.getAttributes().getNamedItem("android:clickable");
-                        if (nodeName.endsWith("Button") || (clickableNode != null && clickableNode.getNodeValue().equals("true"))) {
-                            buttons.add(id);
+                        if (isGenClickListeners) {
+                            final Node clickableNode = node.getAttributes().getNamedItem("android:clickable");
+                            if (nodeName.endsWith("Button") || (clickableNode != null && clickableNode.getNodeValue().equals("true"))) {
+                                buttons.add(id);
+                            }
                         }
+
                     }
                 }
 
@@ -116,7 +121,7 @@ public class ButterLayoutEngineServlet extends HttpServlet {
             }
 
 
-            resp.getWriter().write(new Response("OK", "butter_layout", codeBuilder.toString()).getResponse());
+            resp.getWriter().write(new Response("OK", "output", codeBuilder.toString()).getResponse());
 
         } catch (RequestException | JSONException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();

@@ -1,65 +1,9 @@
 <html>
 <head>
-    <title>ButterLayout
+    <title>XML to ButterJava / ButterLayout
     </title>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-
-
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-
-    <script src="//codemirror.net/lib/codemirror.js"></script>
-    <script src="//codemirror.net/addon/display/fullscreen.js"></script>
-    <link rel="stylesheet" href="//codemirror.net/lib/codemirror.css">
-
-
-    <script src="//codemirror.net/mode/xml/xml.js"></script>
-
-    <script src="//codemirror.net/addon/edit/matchbrackets.js"></script>
-    <link rel="stylesheet" href="//codemirror.net/addon/hint/show-hint.css">
-    <script src="//codemirror.net/addon/hint/show-hint.js"></script>
-    <script src="//codemirror.net/mode/clike/clike.js"></script>
-    <script src="//codemirror.net/addon/display/placeholder.js"></script>
-
-    <style>
-
-        body {
-            background-color: #f5f5f5;
-        }
-
-        .CodeMirror-fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: auto;
-            z-index: 9;
-        }
-
-        .CodeMirror {
-            height: 80%;
-        }
-
-        .CodeMirror {
-            border: 1px solid silver;
-        }
-
-        .CodeMirror-empty.CodeMirror-focused {
-            outline: none;
-        }
-
-        .CodeMirror pre.CodeMirror-placeholder {
-            color: #999;
-        }
-
-    </style>
+    <%@include file="common_headers.jsp" %>
 
     <script>
 
@@ -110,6 +54,7 @@
 
                 var xmlData = xmlEditor.getDoc().getValue();
                 var rSeries = $("select#rSeries").val();
+                var clickListeners = $("input#isClickListeners").is(':checked')
 
                 $.ajax({
                     type: "POST",
@@ -119,7 +64,8 @@
                     url: "butter_layout_engine",
                     data: {
                         xml_data: xmlData,
-                        r_series: rSeries
+                        r_series: rSeries,
+                        click_listeners: clickListeners
                     },
                     success: function (data) {
                         stopLoading();
@@ -127,7 +73,7 @@
 
 
                         if (!data.error) {
-                            javaEditor.getDoc().setValue(data.data.butter_layout);
+                            javaEditor.getDoc().setValue(data.data.output);
                             $("p#error_message").text("");
                         } else {
                             $("p#error_message").text(data.message);
@@ -152,7 +98,8 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h1>ButterLayout</h1>
+            <h1>XML to ButterJava</h1>
+            <p class="text-muted">Generates ButterKnife annotation reference code from Android XML layout resource</p>
         </div>
     </div>
 
@@ -177,6 +124,11 @@
                 <option value="R2">R2</option>
             </select>
             <br>
+
+            <input id="isClickListeners" type="checkbox" checked/>
+            <label for="isClickListeners">Click Listeners</label>
+            <br>
+
             <button id="bGenButterLayout" class="btn btn-primary"><span
                     class="glyphicon glyphicon glyphicon-cog"></span> Generate
             </button>

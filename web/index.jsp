@@ -6,5 +6,5 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%
-    response.sendRedirect("xml_to_butter_java.jsp");
+    response.sendRedirect("view_xml_to_butter_java.jsp");
 %>

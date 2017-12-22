@@ -54,14 +54,10 @@ public class XmlToButterJavaServlet extends HttpServlet {
 
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(new InputSource(new StringReader(xmlData)));
             doc.getDocumentElement().normalize();
-
-
             NodeList nodeList = doc.getElementsByTagName("*");
-
             StringBuilder codeBuilder = new StringBuilder();
             final List<String> buttons = new ArrayList<>();
 

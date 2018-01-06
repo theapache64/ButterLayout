@@ -22,7 +22,7 @@ public class CodeGen {
 
     private static boolean hasList = false;
 
-    private static boolean getGenClassCode(final boolean isJsonObject, final boolean isNestedClass, final StringBuilder codeBuilder, final Object object, final String modelName, final boolean isRetrofitModel) throws JSONException {
+    private static boolean getGenClassCode(final boolean isJsonObject, final boolean isNestedClass, final StringBuilder codeBuilder, final Object object, final String modelName, final boolean isRetrofitModel, boolean hasGetters, boolean hasSetters) throws JSONException {
 
         JSONObject joModel = null;
 
@@ -57,7 +57,7 @@ public class CodeGen {
                     }
 
 
-                    getGenClassCode(!isJsonArray, true, codeBuilder, joModel1, dataType, isRetrofitModel);
+                    getGenClassCode(!isJsonArray, true, codeBuilder, joModel1, dataType, isRetrofitModel, hasGetters, hasSetters);
 
                     if (joModel1.getClass().getSimpleName().equals("JSONObject") && !isJsonArray) {
                         dataType = ((joModel1 instanceof JSONArray || joModel1 instanceof JSONObject) ? dataType : joModel1.getClass().getSimpleName());
@@ -80,17 +80,17 @@ public class CodeGen {
                 return o1.getVariableName().length() - o2.getVariableName().length();
             });
 
-            codeBuilder.insert(0, genClassCode(isNestedClass, modelName, properties, isRetrofitModel, isJsonObject));
+            codeBuilder.insert(0, genClassCode(isNestedClass, modelName, properties, isRetrofitModel, isJsonObject, hasGetters, hasSetters));
         }
 
         return hasList;
 
     }
 
-    public static String getFinalCode(final String packageName, String joString, String modelName, boolean isRetrofitModel) throws JSONException {
+    public static String getFinalCode(final String packageName, String joString, String modelName, boolean isRetrofitModel, boolean hasGetters, boolean hasSetters) throws JSONException {
         final StringBuilder codeBuilder = new StringBuilder();
         hasList = false;
-        CodeGen.getGenClassCode(true, false, codeBuilder, new JSONObject(joString), modelName, isRetrofitModel);
+        CodeGen.getGenClassCode(true, false, codeBuilder, new JSONObject(joString), modelName, isRetrofitModel, hasGetters, hasSetters);
         codeBuilder.insert(0, String.format("%s\n\n%s\n%s\n\n/**\n* Generated using ButterLayout (https://github.com/theapache64/ButterLayout) : %s\n*/ \npublic class %s {\n\n",
                 "package " + packageName + ";",
                 isRetrofitModel ? SERIALIZED_NAME_IMPORT : "",
@@ -101,7 +101,7 @@ public class CodeGen {
         return codeBuilder.toString();
     }
 
-    private static String genClassCode(boolean isNestedClass, String modelName, List<Model.Property> properties, boolean isRetrofitModel, boolean isJSONObject) {
+    private static String genClassCode(boolean isNestedClass, String modelName, List<Model.Property> properties, boolean isRetrofitModel, boolean isJSONObject, boolean hasGetters, boolean hasSetters) {
 
         final StringBuilder codeBuilder = new StringBuilder();
         if (isNestedClass) {
@@ -111,6 +111,8 @@ public class CodeGen {
         final StringBuilder constructorParams = new StringBuilder();
         final StringBuilder constructorThis = new StringBuilder();
         final StringBuilder getters = new StringBuilder();
+        final StringBuilder setters = new StringBuilder();
+
 
         for (final Model.Property property : properties) {
 
@@ -119,13 +121,28 @@ public class CodeGen {
             }
             String variableCamelCase = toCamelCase(property.getVariableName());
             final String a = String.format("%s %s", property.getDataType(), variableCamelCase);
-            codeBuilder.append(String.format("%s\tprivate final %s;", isNestedClass ? "\t" : "", a)).append("\n").append(isRetrofitModel ? "\n" : "");
+            codeBuilder.append(String.format("%s\tprivate %s%s;", isNestedClass ? "\t" : "", !hasSetters ? "final " : "", a)).append("\n").append(isRetrofitModel ? "\n" : "");
 
             constructorParams.append(a).append(",");
             constructorThis.append(String.format("\n%s\t\tthis.", isNestedClass ? "\t" : "")).append(variableCamelCase).append(" = ").append(variableCamelCase).append(";");
 
+            if (hasGetters) {
+                getters.append(String.format("%s\tpublic ", isNestedClass ? "\t" : ""))
+                        .append(property.getDataType()).append(" ")
+                        .append(toGetterName(property.getDataType(), variableCamelCase))
+                        .append(String.format("{\n%s\t\treturn ", isNestedClass ? "\t" : ""))
+                        .append(variableCamelCase)
+                        .append(String.format(";\n%s\t}\n\n", isNestedClass ? "\t" : ""));
+            }
 
-            getters.append(String.format("%s\tpublic ", isNestedClass ? "\t" : "")).append(property.getDataType()).append(" ").append(toGetterName(property.getDataType(), variableCamelCase)).append(String.format("{\n%s\t\treturn ", isNestedClass ? "\t" : "")).append(variableCamelCase).append(String.format(";\n%s\t}\n\n", isNestedClass ? "\t" : ""));
+
+            if (hasSetters) {
+                setters.append(String.format("%s\tpublic void ", isNestedClass ? "\t" : ""))
+                        .append(toSetterName(property.getDataType(), variableCamelCase))
+                        .append(String.format("{\n%s\t\tthis.", isNestedClass ? "\t" : ""))
+                        .append(variableCamelCase).append(" = ").append(variableCamelCase)
+                        .append(String.format(";\n%s\t}\n\n", isNestedClass ? "\t" : ""));
+            }
         }
 
         codeBuilder.append(String.format("\n%s\tpublic ", isNestedClass ? "\t" : "")).append(isJSONObject ? modelName : removePlural(modelName)).append("(")
@@ -133,7 +150,13 @@ public class CodeGen {
         codeBuilder.append(constructorThis);
         codeBuilder.append(String.format("\n%s\t}", isNestedClass ? "\t" : ""));
 
-        codeBuilder.append("\n\n").append(getters);
+        if (hasSetters) {
+            codeBuilder.append("\n\n").append(setters);
+        }
+
+        if (hasGetters) {
+            codeBuilder.append("\n\n").append(getters);
+        }
 
         //class end
         if (isNestedClass) {
@@ -153,6 +176,10 @@ public class CodeGen {
 
     private static String toGetterName(String dataType, String input) {
         return (dataType.equals("boolean") ? "is" : "get") + getFirstCharUppercase(input) + "()";
+    }
+
+    private static String toSetterName(String dataType, String input) {
+        return "set" + getFirstCharUppercase(input) + "(" + dataType + " " + input + ")";
     }
 
     public static String getFirstCharUppercase(String input) {

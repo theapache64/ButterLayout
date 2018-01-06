@@ -25,6 +25,8 @@ public class JSONTOPOJOServlet extends HttpServlet {
     private static final String KEY_CLASS_NAME = "class_name";
     private static final String KEY_PACKAGE_NAME = "package_name";
     private static final String KEY_IS_RETROFIT_MODEL = "is_retrofit_model";
+    private static final String KEY_GETTERS = "getters";
+    private static final String KEY_SETTERS = "setters";
 
 
     @Override
@@ -36,6 +38,8 @@ public class JSONTOPOJOServlet extends HttpServlet {
         final String packageName = req.getParameter(KEY_PACKAGE_NAME);
         System.out.println(req.getParameter(KEY_IS_RETROFIT_MODEL));
         final boolean isRetrofitModel = req.getParameter(KEY_IS_RETROFIT_MODEL).equals("true");
+        final boolean hasGetters = req.getParameter(KEY_GETTERS).equals("true");
+        final boolean hasSetters = req.getParameter(KEY_SETTERS).equals("true");
 
         try {
 
@@ -53,7 +57,7 @@ public class JSONTOPOJOServlet extends HttpServlet {
 
             if (isJSONValid(jsonData)) {
                 resp.getWriter().write(new Response("Ok", "output",
-                        CodeGen.getFinalCode(packageName, jsonData, className, isRetrofitModel)).getResponse());
+                        CodeGen.getFinalCode(packageName, jsonData, className, isRetrofitModel, hasGetters, hasSetters)).getResponse());
             }
 
         } catch (RequestException | JSONException e) {

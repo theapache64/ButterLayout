@@ -64,7 +64,9 @@
                         json_data: jsonData,
                         is_retrofit_model: $("input#isRetrofitModel").is(":checked"),
                         package_name: $("input#iPackageName").val(),
-                        class_name: $("input#iClassName").val()
+                        class_name: $("input#iClassName").val(),
+                        getters: $("input#iGetters").is(":checked"),
+                        setters: $("input#iSetters").is(":checked")
                     },
                     success: function (data) {
                         stopLoading();
@@ -137,6 +139,17 @@
             <br>
             <label class="pull-left" for="iPackageName">Package name</label>
             <input id="iPackageName" class="form-control" placeholder="Package name" value="com.my.packagename"/>
+
+
+            <br>
+            <input id="iGetters" type="checkbox" checked/>
+            <label for="iGetters">Getters</label>
+            <br>
+
+            <br>
+            <input id="iSetters" type="checkbox"/>
+            <label for="iSetters">Setters</label>
+            <br>
 
             <br>
             <input id="isRetrofitModel" type="checkbox" checked/>

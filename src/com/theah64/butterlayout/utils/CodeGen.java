@@ -92,7 +92,7 @@ public class CodeGen {
         hasList = false;
         CodeGen.getGenClassCode(true, false, codeBuilder, new JSONObject(joString), modelName, isRetrofitModel);
         codeBuilder.insert(0, String.format("%s\n\n%s\n%s\n\n/**\n* Generated using ButterLayout (https://github.com/theapache64/ButterLayout) : %s\n*/ \npublic class %s {\n\n",
-                "package " + packageName,
+                "package " + packageName + ";",
                 isRetrofitModel ? SERIALIZED_NAME_IMPORT : "",
                 hasList ? "import java.util.List;" : "",
                 new Date().toString(), modelName));

@@ -34,7 +34,8 @@ public class JSONTOPOJOServlet extends HttpServlet {
         final String jsonData = req.getParameter(KEY_JSON_DATA);
         final String className = req.getParameter(KEY_CLASS_NAME);
         final String packageName = req.getParameter(KEY_PACKAGE_NAME);
-        final boolean isRetrofitModel = req.getParameter(KEY_IS_RETROFIT_MODEL) != null;
+        System.out.println(req.getParameter(KEY_IS_RETROFIT_MODEL));
+        final boolean isRetrofitModel = req.getParameter(KEY_IS_RETROFIT_MODEL).equals("true");
 
         try {
 

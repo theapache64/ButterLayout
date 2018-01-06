@@ -1,3 +1,8 @@
+package com.theah64.butterlayout.servlets;
+
+import com.theah64.butterlayout.RequestException;
+import com.theah64.butterlayout.Response;
+import com.theah64.butterlayout.models.View;
 import org.json.JSONException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -137,64 +142,5 @@ public class ViewXmlToStyleXmlServlet extends HttpServlet {
         return styleName;
     }
 
-    static class View {
-
-        final String id, type;
-        final List<Property> properties;
-
-        View(String id, String type, List<Property> properties) {
-            this.id = id;
-            this.type = type;
-            this.properties = properties;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public List<Property> getProperties() {
-            return properties;
-        }
-
-        @Override
-        public String toString() {
-            return "View{" +
-                    "id='" + id + '\'' +
-                    ", type='" + type + '\'' +
-                    ", properties=" + properties +
-                    '}';
-        }
-
-        static class Property {
-
-            private final String key, value;
-
-            Property(String key, String value) {
-                this.key = key;
-                this.value = value;
-            }
-
-            public String getKey() {
-                return key;
-            }
-
-            public String getValue() {
-                return value;
-            }
-
-            @Override
-            public String toString() {
-                return "Property{" +
-                        "key='" + key + '\'' +
-                        ", value='" + value + '\'' +
-                        '}';
-            }
-        }
-
-    }
 
 }

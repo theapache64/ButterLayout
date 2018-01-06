@@ -1,3 +1,7 @@
+package com.theah64.butterlayout.servlets;
+
+import com.theah64.butterlayout.RequestException;
+import com.theah64.butterlayout.Response;
 import org.json.JSONException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

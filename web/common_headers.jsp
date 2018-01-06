@@ -12,7 +12,7 @@
 <script src="//codemirror.net/lib/codemirror.js"></script>
 <script src="//codemirror.net/addon/display/fullscreen.js"></script>
 <link rel="stylesheet" href="//codemirror.net/lib/codemirror.css">
-
+<script src="//codemirror.net/mode/javascript/javascript.js"></script>
 
 <script src="//codemirror.net/mode/xml/xml.js"></script>
 

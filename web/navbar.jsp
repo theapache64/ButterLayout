@@ -13,6 +13,8 @@
 
             <li><a href="view_xml_to_style_xml.jsp">To Style XML</a></li>
 
+            <li><a href="json_to_pojo.jsp">JSON To POJO</a></li>
+
         </ul>
         <ul class="nav navbar-nav navbar-right">
 

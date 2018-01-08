@@ -1,3 +1,4 @@
+<%@ page import="com.theah64.butterlayout.servlets.XmlToButterJavaServlet" %>
 <html>
 <head>
     <title>XML to ButterJava / ButterLayout
@@ -65,7 +66,8 @@
                     data: {
                         xml_data: xmlData,
                         r_series: rSeries,
-                        click_listeners: clickListeners
+                        click_listeners: clickListeners,
+                        mode: $('input[name="mode"]:checked').val()
                     },
                     success: function (data) {
                         stopLoading();
@@ -95,7 +97,7 @@
 </head>
 <body>
 
-<%@include file="navbar.jsp"%>
+<%@include file="navbar.jsp" %>
 
 <div class="container">
 
@@ -126,6 +128,17 @@
                 <option value="R">R</option>
                 <option value="R2">R2</option>
             </select>
+            <br>
+
+            <%--ButterKnife--%>
+
+            <input id="iButterKnife" type="radio" name="mode" value="<%=XmlToButterJavaServlet.MODE_BUTTER_KNIFE%>"
+                   checked/>
+            <label for="iButterKnife">ButterKnife</label>
+            <br>
+            <input id="iFindViewById" type="radio" name="mode"
+                   value="<%=XmlToButterJavaServlet.MODE_FIND_VIEW_BY_ID%>"/>
+            <label for="iFindViewById">findViewById</label>
             <br>
 
             <input id="isClickListeners" type="checkbox" checked/>

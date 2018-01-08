@@ -32,6 +32,8 @@ public class XmlToButterJavaServlet extends HttpServlet {
     private static final String KEY_XML_DATA = "xml_data";
     private static final String KEY_R_SERIES = "r_series";
     private static final String KEY_CLICK_LISTENERS = "click_listeners";
+    public static final String MODE_BUTTER_KNIFE = "ButterKnife";
+    public static final String MODE_FIND_VIEW_BY_ID = "findViewById";
 
     private static String getFirstCharUppercase(String input) {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
@@ -44,7 +46,7 @@ public class XmlToButterJavaServlet extends HttpServlet {
         final String xmlData = req.getParameter(KEY_XML_DATA);
         final String rSeries = req.getParameter(KEY_R_SERIES);
         final boolean isGenClickListeners = req.getParameter(KEY_CLICK_LISTENERS).equals("true");
-
+        final String mode = req.getParameter("mode");
 
         try {
 
@@ -87,20 +89,29 @@ public class XmlToButterJavaServlet extends HttpServlet {
                         }
 
                         final String id = idNode.getNodeValue().split("/")[1];
-                        codeBuilder.append(String.format("@BindView(%s.id.%s)\n", rSeries, id));
-
                         if (nodeName.contains(".")) {
                             final String[] nodeNameChunks = nodeName.split("\\.");
                             nodeName = nodeNameChunks[nodeNameChunks.length - 1];
                         }
 
-                        codeBuilder.append(String.format("%s %s;\n\n", nodeName, id));
+                        if (mode.equals(MODE_BUTTER_KNIFE)) {
 
-                        if (isGenClickListeners) {
-                            final Node clickableNode = node.getAttributes().getNamedItem("android:clickable");
-                            if (nodeName.endsWith("Button") || (clickableNode != null && clickableNode.getNodeValue().equals("true"))) {
-                                buttons.add(id);
+
+                            codeBuilder.append(String.format("@BindView(%s.id.%s)\n", rSeries, id));
+
+
+                            codeBuilder.append(String.format("%s %s;\n\n", nodeName, id));
+
+                            if (isGenClickListeners) {
+                                final Node clickableNode = node.getAttributes().getNamedItem("android:clickable");
+                                if (nodeName.endsWith("Button") || (clickableNode != null && clickableNode.getNodeValue().equals("true"))) {
+                                    buttons.add(id);
+                                }
                             }
+
+                        } else {
+                            //MODE_FIND_VIEW_BY_ID
+                            codeBuilder.append(String.format("\n%s %s = view.findViewById(%s.id.%s);", nodeName, id, rSeries, id));
                         }
 
                     }

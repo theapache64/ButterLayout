@@ -61,7 +61,9 @@
                     },
                     url: "xml_to_binder_java",
                     data: {
-                        xml_data: xmlData
+                        xml_data: xmlData,
+                        root_view : $("input#iRootView").val(),
+                        data_model : $("input#iDataModel").val()
                     },
                     success: function (data) {
                         stopLoading();
@@ -119,6 +121,17 @@
                       style="width: 100%;height: 80%"></textarea>
         </div>
         <div class="col-md-2 text-center">
+
+            <%--Root view--%>
+            <label for="iRootView" class="pull-left">ViewHolder</label>
+            <input id="iRootView" class="form-control" placeholder="RootView" value="holder"/>
+            <br>
+
+            <%--Data model--%>
+            <label for="iDataModel" class="pull-left">Date Model</label>
+            <input id="iDataModel" class="form-control" placeholder="Date Model" value="item"/>
+            <br>
+
             <button id="bGenButterLayout" class="btn btn-primary"><span
                     class="glyphicon glyphicon glyphicon-cog"></span> Generate
             </button>

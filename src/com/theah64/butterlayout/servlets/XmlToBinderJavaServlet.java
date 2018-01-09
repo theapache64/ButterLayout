@@ -30,6 +30,8 @@ import java.util.List;
 public class XmlToBinderJavaServlet extends HttpServlet {
 
     private static final String KEY_XML_DATA = "xml_data";
+    private static final String KEY_ROOT_VIEW = "root_view";
+    private static final String KEY_DATA_MODEL = "data_model";
 
     private static String getFirstCharUppercase(String input) {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
@@ -40,8 +42,19 @@ public class XmlToBinderJavaServlet extends HttpServlet {
         resp.setContentType("application/json");
 
         final String xmlData = req.getParameter(KEY_XML_DATA);
+        String rootView = req.getParameter(KEY_ROOT_VIEW);
+        String dataModel = req.getParameter(KEY_DATA_MODEL);
+
+
+        if (rootView.trim().isEmpty()) {
+            rootView = null;
+        }
 
         try {
+
+            if (dataModel.trim().isEmpty()) {
+                throw new RequestException("Data model name can't be empty");
+            }
 
             if (xmlData == null || xmlData.trim().isEmpty()) {
                 throw new RequestException("Missing xml_data");
@@ -84,7 +97,15 @@ public class XmlToBinderJavaServlet extends HttpServlet {
 
                         //vtilCompanyName.setText(employeeExperience.getCompanyName());
                         final String fromFirstChar = getFromFirstUpperChar(id);
-                        codeBuilder.append("\n").append(id).append(".setText(dataModel.get").append(fromFirstChar).append("());");
+                        if (nodeName.endsWith("CheckBox")) {
+                            codeBuilder.append("\n")
+                                    .append(rootView != null ? rootView + "." : "")
+                                    .append(id).append(String.format(".setChecked(%s.is", dataModel)).append(fromFirstChar).append("());");
+                        } else {
+                            codeBuilder.append("\n")
+                                    .append(rootView != null ? rootView + "." : "")
+                                    .append(id).append(String.format(".setText(%s.get", dataModel)).append(fromFirstChar).append("());");
+                        }
 
                     }
                 }

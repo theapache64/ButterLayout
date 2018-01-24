@@ -96,15 +96,14 @@ public class XmlToButterJavaServlet extends HttpServlet {
 
                         if (mode.equals(MODE_BUTTER_KNIFE)) {
 
-
-                            codeBuilder.append(String.format("@BindView(%s.id.%s)\n", rSeries, id));
-
-
-                            codeBuilder.append(String.format("%s %s;\n\n", nodeName, id));
+                            if (!nodeName.endsWith("RadioButton")) {
+                                codeBuilder.append(String.format("@BindView(%s.id.%s)\n", rSeries, id));
+                                codeBuilder.append(String.format("%s %s;\n\n", nodeName, id));
+                            }
 
                             if (isGenClickListeners) {
                                 final Node clickableNode = node.getAttributes().getNamedItem("android:clickable");
-                                if (nodeName.endsWith("Button") || (clickableNode != null && clickableNode.getNodeValue().equals("true"))) {
+                                if ((nodeName.endsWith("Button") && !nodeName.endsWith("RadioButton")) || (clickableNode != null && clickableNode.getNodeValue().equals("true"))) {
                                     buttons.add(id);
                                 }
                             }
